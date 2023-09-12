@@ -13,8 +13,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    # path('api/categories/', include('apps.category.urls')),
-    # path('api/product/', include('apps.product.urls')),
+    path('api/categories/', include('apps.category.urls')),
+    path('api/product/', include('apps.product.urls')),
     # path('api/cart/', include('apps.cart.urls'))
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
