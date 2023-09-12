@@ -214,6 +214,13 @@ DJOSER = {
         'http://localhost:8000/google',
         'http://localhost:8000/facebook'
     ],
+
+    'SERIALIZERS': {
+        'user_create': 'apps.user.serializers.UserCreateSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+        'user': 'apps.user.serializers.UserCreateSerializer',
+        'current_user': 'apps.user.serializers.UserCreateSerializer',
+    },
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -244,7 +251,10 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-    ]
+    ],
+      'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
 
