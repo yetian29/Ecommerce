@@ -8,7 +8,7 @@ from datetime import datetime
 class Product(models.Model):
 
     def get_media_path(instance, filename):
-        return f"ecommerce/{0}/{1}".format(instance.name, filename)
+        return "ecommerce/{0}/{1}".format(instance.name, filename)
     
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
