@@ -63,3 +63,54 @@ class ProductListCategoryView(APIView):
             return Response({'Error': 'Category does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 
+class ProductBySearchView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def post(self, request, format=None):
+        data = self.request.data
+        category_id = data['category_id']
+        price_range = data['price_range']
+        sortBy = data['sortBy']
+        order = data['order']
+
+        try:
+            category_id = int(category_id)
+        except:
+            return Response({'Error': 'Category ID invalid.Category ID must be an integer'})
+        else:
+            if Category.objects.filter(id = category_id).exists():
+                category = Category.objects.get(id = category_id)
+                if category.products.all().exists():
+                    products = category.products.all()
+
+                    if price_range == '1 - 19':
+                        products = products.filter(price__gte = 1)
+                        products = products.filter(price__lt = 20)
+                    elif price_range == '20 - 39':
+                        products = products.filter(price__gte = 20)
+                        products = products.filter(price__lt = 40)
+                    elif price_range == '40 - 59':
+                        products = products.filter(price__gte = 40)
+                        products = products.filter(price__lt = 60)
+                    elif price_range == '60 - 79':
+                        products = products.filter(price__gte = 60)
+                        products =products.filter(price__lt = 80)
+                    elif price_range == 'More than 80':
+                        products = products.filter(price__gte = 80)
+                    
+
+                    if not (sortBy == 'date_created', sortBy == 'sold', sortBy == 'price'):
+                         sortBy = 'date_created'
+                    if order == 'desc':
+                        sortBy = '-' + sortBy
+                        products = products.order_by(sortBy)
+                    elif order == 'asc':
+                        products = products.order_by(sortBy)
+                    else:
+                        products = products.order_by(sortBy)
+                    products = ProductSerializer(products, many=True)
+
+                    return Response({'Products': products.data}, status=status.HTTP_200_OK)
+                return Response({'Error': 'No products found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'Error': 'No category found'}, status=status.HTTP_404_NOT_FOUND)
+                       
+
