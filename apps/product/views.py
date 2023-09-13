@@ -58,7 +58,7 @@ class ProductListCategoryView(APIView):
                 if category.products.all().exists():
                     products = category.products.all()
                     products = ProductSerializer(products, many=True)
-                    return Response({'filtered_products': products.data}, status=status.HTTP_200_OK)
+                    return Response({'products': products.data}, status=status.HTTP_200_OK)
                 return Response({'Error': 'No products found'}, status=status.HTTP_404_NOT_FOUND)
             return Response({'Error': 'Category does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -109,7 +109,7 @@ class ProductBySearchView(APIView):
                         products = products.order_by(sortBy)
                     products = ProductSerializer(products, many=True)
 
-                    return Response({'Products': products.data}, status=status.HTTP_200_OK)
+                    return Response({'filtered_products': products.data}, status=status.HTTP_200_OK)
                 return Response({'Error': 'No products found'}, status=status.HTTP_404_NOT_FOUND)
             return Response({'Error': 'No category found'}, status=status.HTTP_404_NOT_FOUND)
                        
