@@ -416,7 +416,7 @@ function Navbar({isAuthenticated, logout}) {
                   </>
                 )}
               </Popover>
-               <div className="w-full flex-1 md:px-4  xl:col-span-6 ">
+               <div className="w-full flex-1 md:px-8  xl:col-span-6 ">
                   <div className="flex items-center px-6 py-4 md:max-w-[350px] md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                     <form onSubmit={e => handleSubmit(e)} className="w-full">
                       <label htmlFor="search" className="sr-only">
