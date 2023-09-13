@@ -9,7 +9,8 @@ import Activate from "./components/pages/auth/Activate";
 import Login from "./components/pages/auth/Login";
 import ResetPassword from "./components/pages/auth/ResetPassword";
 import ResetPasswordConfirm from "./components/pages/auth/ResetPasswordConfirm";
-
+import Shop from "./components/pages/Shop";
+import ProductDetail from "./components/pages/ProductDetail";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
       <Routes>
         <Route path='' element={<Home/>}/>
         <Route path='*' element={<Error404/>}/>
+        <Route path='/shop' element={<Shop/>}/>
+        <Route path='/product/:product_id' element={<ProductDetail/>}/>
 
         {/* Authentication*/}
 

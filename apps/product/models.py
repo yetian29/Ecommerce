@@ -17,6 +17,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.IntegerField(default=0)
     sold = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0, max_length=5)
     description = models.TextField()
     date_created = models.DateTimeField(default=datetime.now)
 
