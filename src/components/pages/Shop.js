@@ -121,29 +121,52 @@ function Shop({get_categories, categories, get_products, products, filter_produc
 
                 {/* Filters */}
                 <form onSubmit={e => handleSubmit(e)} className="mt-4 border-t border-gray-200">
-                  <h3 className="sr-only">Categories</h3>
-                  {
-                    categories?
-                    categories.map(category =>{
-                        return(
-                            <div key={category.id} className='flex items-center mb-4 '>
-                                <input
-                                name='category_id'               
-                                type='radio'
-                                value={category.id.toString()}
-                                onChange={e => handleChange(e)}
-                                className='h-4 w-4 border-gray-500 text-blue-500 focus:text-blue-700'
-                                
-                                />
-                                <label className='ml-4 f text-[20px] text-gray-500 flex-1'>{category.name}</label>
-                            </div>
-                        )
-                    })
-                    
-                    :<></>
-                  }
+                   <Disclosure as="div"  className="border-t border-gray-200 px-4 py-6">
 
-              
+
+                      {({ open }) => (
+                        <>
+                          <h3 className="-mx-2 -my-3 flow-root">
+                            <Disclosure.Button className="px-2 py-3 bg-white w-full flex items-center justify-between text-gray-400 hover:text-gray-500">
+                              <span className="font-medium text-gray-900 text-2xl">Categories</span>
+                              <span className="ml-6 flex items-center">
+                                {open ? (
+                                  <MinusSmallIcon className="h-5 w-5" aria-hidden="true" />
+                                ) : (
+                                  <PlusSmallIcon className="h-5 w-5" aria-hidden="true" />
+                                )}
+                              </span>
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="pt-6">
+                              <div className="space-y-6">
+
+                           {
+                            categories?
+                            categories.map(category =>{
+                                return(
+                                    <div key={category.id} className='flex items-center mb-4 '>
+                                        <input
+                                        name='category_id'               
+                                        type='radio'
+                                        value={category.id.toString()}
+                                        onChange={e => handleChange(e)}
+                                        className='h-4 w-4 border-gray-500 text-blue-500 focus:text-blue-700'
+                                        
+                                          />
+                                        <label className='ml-4 f text-[20px] text-gray-500 flex-1'>{category.name}</label>
+                                        </div>
+                                    )
+                                })
+                                
+                            :<></>
+                              }
+                            </div>
+                            </Disclosure.Panel>
+                          </h3>
+                        </>
+                      )}
+                    </Disclosure>
+                    
                     <Disclosure as="div"  className="border-t border-gray-200 px-4 py-6">
                       {({ open }) => (
                         <>
@@ -173,7 +196,7 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                                                   className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                                                   defaultChecked
                                               />
-                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light'>{price.name}</label>
+                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light text-[20px]'>{price.name}</label>
                                           </div>
                                       )
                                   } else {
@@ -186,7 +209,7 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                                                   type='radio'
                                                   className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                                               />
-                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light'>{price.name}</label>
+                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light text-[20px]'>{price.name}</label>
                                           </div>
                                       )
                                   }
@@ -262,7 +285,7 @@ function Shop({get_categories, categories, get_products, products, filter_produc
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative z-10 flex items-baseline justify-between pt-24 pb-6 border-b border-gray-200">
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">Shop</h1>
+            <h1 className="text-4xl font-extrabold tracking-tight text-red-500">Shop</h1>
 
             <div className="flex items-center">     
               <button
@@ -281,31 +304,62 @@ function Shop({get_categories, categories, get_products, products, filter_produc
               Products
             </h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
-              {/* Filters */}
-              <form onSubmit={e => handleSubmit(e)} className="hidden lg:block">
-                <h3 className="sr-only">Categories</h3>
-                {
-                    categories?
-                    categories.map(category => {
-                        return(
-                            <div key={category.id}  className='flex items-center mb-4'>
-                                <input
-                                name='category_id'
-                                value={category.id.toString()} 
-                                onChange={e => handleChange(e)}
-                                type='radio'
-                                className='h-4 w-4 text-blue-500 focus:ring-blue-700 border-gray-500 rounded-full'
-                                />
-                                <label className='ml-3 text-[25px] text-gray-500 flex-1'>{category.name}</label>
-                            </div>
-                        )
-                    })
-                    :<></>
-                }
 
+            <div className="">
+              {/* Filters */}
+              <form onSubmit={e => handleSubmit(e)} className="">
+                <div className='grid grid-cols-4 gap-10 items-center'>
                 
-                  <Disclosure as="div" className="border-b border-gray-200 py-6"> 
+                  <Disclosure as="div"  className="px-1 py-6">
+
+
+                      {({ open }) => (
+                        <>
+                          <h3 className="-mx-2 -my-3 flow-root">
+                            <Disclosure.Button className="px-2 py-3 bg-white w-full flex items-center justify-between text-gray-400 hover:text-gray-500">
+                              <span className="font-medium text-gray-900 text-2xl">Categories</span>
+                              <span className="flex items-center">
+                                {open ? (
+                                  <MinusSmallIcon className="h-5 w-5" aria-hidden="true" />
+                                ) : (
+                                  <PlusSmallIcon className="h-5 w-5" aria-hidden="true" />
+                                )}
+                              </span>
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="pt-6">
+                              <div className="space-y-6 ml-2">
+
+                           {
+                            categories?
+                            categories.map(category =>{
+                                return(
+                                    <div key={category.id} className='flex items-center mb-4 '>
+                                        <input
+                                        name='category_id'               
+                                        type='radio'
+                                        value={category.id.toString()}
+                                        onChange={e => handleChange(e)}
+                                        className='h-4 w-4 border-gray-500 text-blue-500 focus:text-blue-700'
+                                        
+                                          />
+                                        <label className='ml-4 f text-[20px] text-gray-500 flex-1'>{category.name}</label>
+                                        </div>
+                                    )
+                                })
+                                
+                            :<></>
+                              }
+                            </div>
+                            </Disclosure.Panel>
+                          </h3>
+                        </>
+                      )}
+                  </Disclosure>
+                
+
+                 
+                    
+                  <Disclosure as="div" className="py-6"> 
                     {({ open }) => (
                       <>
                         <h3 className="-my-3 flow-root">
@@ -334,7 +388,7 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                                                   className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                                                   defaultChecked
                                               />
-                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light'>{price.name}</label>
+                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light text-[20px]'>{price.name}</label>
                                           </div>
                                       )
                                   } else {
@@ -347,7 +401,7 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                                                   type='radio'
                                                   className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                                               />
-                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light'>{price.name}</label>
+                                              <label className='ml-3 min-w-0 flex-1 text-gray-500 font-sofiapro-light text-[20px]'>{price.name}</label>
                                           </div>
                                       )
                                   }
@@ -360,9 +414,9 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                       </>
                     )}
                   </Disclosure>
-
-
-                  <Disclosure as="div" className="border-b border-gray-200 py-6">
+                
+                    
+                  <Disclosure as="div" className="py-6">
                     {({ open }) => (
                       <>
                         <h3 className="-my-3 flow-root">
@@ -413,9 +467,23 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                       </>
                     )}
                   </Disclosure>
-                    <button type='submit' className="mt-3 float-right inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
->                       Search
-                    </button>
+                 
+
+                
+
+
+                
+                <div>
+                  <button type='submit' className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+  >                    Search
+                  </button>
+                </div>
+                </div>
+
+                 
+
+               
+   
 
                  
 
@@ -424,15 +492,16 @@ function Shop({get_categories, categories, get_products, products, filter_produc
               </form>
 
               {/* Product grid */}
-              <div className="lg:col-span-3">
-                {/* Replace with your content */}
-                      {showProducts()}
-                {/* /End replace */}
-              </div>
+           
             </div>
           </section>
         </main>
       </div>
+      <>
+        {/* Replace with your content */}
+              {showProducts()}
+        {/* /End replace */}
+      </>
     </Layout>
   )
 }
