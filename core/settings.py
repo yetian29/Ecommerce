@@ -48,7 +48,8 @@ PROJECT_APPS = [
 
 ECOMMERCE_APPS = [
     'apps.category',
-    'apps.product'
+    'apps.product',
+    'apps.cart'
 
 ]
 
