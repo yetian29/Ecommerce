@@ -64,7 +64,7 @@ class AddItemView(APIView):
                         if cart_items.filter(product=product).exists():
                             return Response({'Error': 'Product already in cart'}, status=status.HTTP_409_CONFLICT)
                         else:
-                            cart_items.
+                            CartItem.objects.create(cart=cart, product=product, count=count)
                             total_items = int(cart.total_items) + 1
                             total_items = Cart.objects.filter(user=user).update(total_items=total_items)
 
