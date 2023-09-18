@@ -128,7 +128,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -261,9 +260,12 @@ REST_FRAMEWORK = {
 
 
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEV')
-   
+
+     
 
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEV')
+  
+
 
 
 AUTH_USER_MODEL = "user.UserAccount"
