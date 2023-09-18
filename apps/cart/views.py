@@ -33,7 +33,7 @@ class GetItemsView(APIView):
                 result.append(item)
 
             return Response({'cart_items': result}, status=status.HTTP_200_OK)
-  
+
 
 class AddItemView(APIView):
     permission_classes=(permissions.AllowAny,)
@@ -64,15 +64,15 @@ class AddItemView(APIView):
                         if cart_items.filter(product=product).exists():
                             return Response({'Error': 'Product already in cart'}, status=status.HTTP_409_CONFLICT)
                         else:
-                            CartItem.objects.create(cart=cart, product=product, count=count)
+                            cart_items.
                             total_items = int(cart.total_items) + 1
                             total_items = Cart.objects.filter(user=user).update(total_items=total_items)
-                            
+
                             for cart_item in cart_items:
                                 item = {}
                                 item['id'] = cart_item.id
                                 item['count'] = cart_item.count
-                                product = ProductSerializer(product) 
+                                product = ProductSerializer(product)
                                 item['product'] = product.data
                                 result.append(item)
                             return Response({'item_add': result}, status=status.HTTP_200_OK)
@@ -103,7 +103,7 @@ class RemoveItemView(APIView):
                 else:
                     if Product.objects.filter(id=product_id).exists():
                         product = Product.objects.get(id=product_id)
-                       
+
                         if cart_items.filter(product=product).exists():
                             cart_items.filter(product=product).delete()
                             total_items = int(cart.total_items) - 1
@@ -119,10 +119,10 @@ class RemoveItemView(APIView):
                             return Response({'cart_items': result}, status=status.HTTP_200_OK)
 
                         return Response({'Error': 'Product is not in cart'}, status=status.HTTP_409_CONFLICT)
-                    return Response({'Error': 'Product does nost exist. Can not Remove'}, status=status.HTTP_409_CONFLICT)    
-                
+                    return Response({'Error': 'Product does nost exist. Can not Remove'}, status=status.HTTP_409_CONFLICT)
+
             return Response({'cart_items': result}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
 class EmptyCartView(APIView):
     permission_classes=(permissions.AllowAny,)
 
@@ -141,7 +141,7 @@ class EmptyCartView(APIView):
                 cart.cart_items.all().delete()
                 cart.total_items.update(total_items=0)
                 return Response({'success': 'Cart emptied successfully'}, status=status.HTTP_200_OK)
-            
+
 class GetTotalPriceView(APIView):
     def get(self, request, format=None):
         user = self.request.user
@@ -162,7 +162,7 @@ class GetTotalPriceView(APIView):
                 total_cost = round(total_cost, 2)
                 total_compare_post = round(total_compare_post, 2)
             return Response({'total_cost': total_cost, 'total_compare_cost': total_compare_post}, status=status.HTTP_200_OK)
-            
+
 class GetTotalItemView(APIView):
     def get(self, request, formate=None):
         user = self.request.user
@@ -173,11 +173,11 @@ class GetTotalItemView(APIView):
             return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             cart = Cart.objects.get(user=user)
-        
+
             total_items = cart.total_items
             return Response({'total_items': total_items}, status=status.HTTP_200_OK)
-        
-    
+
+
 class UpdateItemView(APIView):
     permission_classes=(permissions.AllowAny,)
     def put(self, request, formate=None):
@@ -194,7 +194,7 @@ class UpdateItemView(APIView):
             cart = Cart.objects.get(user=user)
             if cart.cart_items.all().exists:
                 cart_items = cart.cart_items.order_by('product').all()
-                
+
                 try:
                     product_id = int(product_id)
                 except:
@@ -218,15 +218,11 @@ class UpdateItemView(APIView):
                                 item['product'] = product.data
                                 result.append(item)
                             return Response({'cart_items': result}, status=status.HTTP_200_OK)
-                                    
+
                         return Response({'Error': 'The product is out of stock or the quantity added is too large'}, status=status.HTTP_409_CONFLICT)
 
                     return Response({'Error': 'Product is not in cart'}, status=status.HTTP_409_CONFLICT)
 
-        
-
-                
-                    
 
 
 
@@ -234,4 +230,7 @@ class UpdateItemView(APIView):
 
 
 
-   
+
+
+
+
