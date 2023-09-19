@@ -142,7 +142,7 @@ class EmptyCartView(APIView):
                 Cart.objects.filter(user=user).update(total_items=0 )
                 return Response({'success': 'Cart emptied successfully'}, status=status.HTTP_200_OK)
             
-class GetTotalPriceView(APIView):
+class GetTotalPricesView(APIView):
     def get(self, request, format=None):
         user = self.request.user
         try:
@@ -163,7 +163,7 @@ class GetTotalPriceView(APIView):
                 total_compare_post = round(total_compare_post, 2)
             return Response({'total_cost': total_cost, 'total_compare_cost': total_compare_post}, status=status.HTTP_200_OK)
             
-class GetTotalItemView(APIView):
+class GetTotalItemsView(APIView):
     def get(self, request, formate=None):
         user = self.request.user
         try:

@@ -25,6 +25,7 @@ import { Link } from 'react-router-dom'
 import Alert from '../alert/Alert'
 import { connect } from 'react-redux'
 import { logout } from '../redux/actions/auth'
+import {ShoppingCartIcon} from '@heroicons/react/24/outline'
 
 const solutions = [
   {
@@ -188,15 +189,19 @@ function Navbar({isAuthenticated, logout}) {
 
     const guestLinks = (
         <>
-           <Link to="/login" className="mr-6 text-base font-medium text-gray-500 hover:text-gray-900">
+         
+             {/* <Link to="/login" className="ml-5 text-base font-medium text-gray-500 hover:text-gray-900">
                 Sign in
-            </Link>
+            </Link> */}
+
             <Link
-              to="/signup"
-              className="float-right inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+              to="/login"
+              className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             >
-              Sign up
-            </Link>
+              LOGIN 
+            </Link> 
+         
+          
         </>
     );
 
@@ -213,7 +218,7 @@ function Navbar({isAuthenticated, logout}) {
      <Popover className="relative bg-white">
       <div className="absolute inset-0 shadow z-30 pointer-events-none" aria-hidden="true" />
       <div className="relative z-20">
-        <div className="sticky top-0 max-w-7xl mx-auto flex justify-between items-center px-4 py-5 sm:px-6 sm:py-4 lg:px-8 md:justify-start md:space-x-10">
+        <div className="sticky top-0 max-w-7xl mx-auto flex justify-between items-center px-3 py-5 sm:px-6 sm:py-4 lg:px-8 md:justify-start md:space-x-10">
           <div>
             <a href="/" className="flex mr-[40px]">
               <span className="sr-only">Workflow</span>
@@ -224,13 +229,17 @@ function Navbar({isAuthenticated, logout}) {
               />
             </a>
           </div>
-          <div className="-mr-2 -my-2 md:hidden">
+          <div className="flex items-center -mr-2 -my-2 md:hidden">
+             <Link to='/cart'>
+                <ShoppingCartIcon className='mr-5 h-7 w-7 text-gray-400'/>
+
+              </Link>
             <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
               <span className="sr-only">Open menu</span>
               <MenuIcon className="h-6 w-6" aria-hidden="true" />
             </Popover.Button>
           </div>
-          <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
+          <div className="gap-6 hidden md:flex-1 md:flex md:items-center md:justify-between">
             <Popover.Group as="nav" className="flex space-x-[100px] items-center">
               <Popover>
                 {({ open }) => (
@@ -442,14 +451,15 @@ function Navbar({isAuthenticated, logout}) {
                 </div>
             </Popover.Group>
             <div className="flex items-center">
+              <Link to='/cart' className='mr-5'>
+                <ShoppingCartIcon className='mr-5 h-8 w-8 text-gray-400'/>
+
+              </Link>
              
               {
                 isAuthenticated ? authLinks: guestLinks
               }
-
-
-
-
+      
             </div>
           </div>
         </div>

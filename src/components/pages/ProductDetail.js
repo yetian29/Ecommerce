@@ -8,7 +8,8 @@ import { HeartIcon, MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/ou
 import { useParams } from "react-router-dom"
 import { connect } from "react-redux"
 import ProductColor from "../product/ProductColor"
-import { get_product } from '../redux/actions/product'
+import { get_product} from '../redux/actions/product'
+import { add_item } from '../redux/actions/cart'
 
 
 function classNames(...classes) {
@@ -19,15 +20,35 @@ function classNames(...classes) {
 
 
 
-const ProductDetail = ({get_product, product}) =>{
+const ProductDetail = ({get_product, product, add_item, item_add}) =>{
 
     const params = useParams()
 
     const product_id = params.product_id
 
+    const [count, setCount] = useState(1)
+
+    const addCount = () => {  
+      setCount(count + 1)
+    }
+
+    const minusCount = () => {
+      setCount(count - 1)
+    }
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      add_item(product_id, count)
+      window.scrollTo(0, 0)
+    }
+
+
     useEffect(() => {
         get_product(product_id)
+       
     },[])
+
+    
     
     return(
         <Layout>
@@ -94,13 +115,26 @@ const ProductDetail = ({get_product, product}) =>{
             <form className="mt-6">
               {/* Colors */}
             <ProductColor/>
+                <div className='items-center mt-10 flex flex-row gap-5 cursor-pointer'>
+                  <h3>Quantity</h3>
+                  <div className='border flex w-[150px] h-[55px] bg-gray-100 justify-center items-center'>
+                    <span onClick={minusCount}  className='text-[30px] w-full text-center'>-</span>
+                    <span  className='border-x-4 border-gray-200 text-[35px] w-full text-center'>{count}</span>
+                    <span onClick={addCount} className='text-[30px] w-full text-center'>+</span>
+                   </div>
+                  <h3>{product.quantity} products are available in stock</h3>
+
+                        
+                </div>
+                
 
               <div className="mt-10 flex sm:flex-col1">
+                
                 <button
-                  type="submit"
+                  onClick={e => handleSubmit(e)}
                   className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
                 >
-                  Add to bag
+                  Add to shopping cart
                 </button>
 
                 <button
@@ -133,8 +167,11 @@ const ProductDetail = ({get_product, product}) =>{
 }
 
 const mapStateToProps = state => ({
-   product: state.Product.product
+   product: state.Product.product,
+   item_add: state.Cart.item_add
+
 })
 export default connect(mapStateToProps,{
-   get_product
+   get_product,
+   add_item
 })(ProductDetail)

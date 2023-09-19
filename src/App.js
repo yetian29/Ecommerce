@@ -12,6 +12,7 @@ import ResetPasswordConfirm from "./components/pages/auth/ResetPasswordConfirm";
 import Shop from "./components/pages/Shop";
 import ProductDetail from "./components/pages/ProductDetail";
 import ProductSearch from "./components/pages/ProductSearch";
+import Cart from "./components/pages/Cart"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/shop' element={<Shop/>}/>
         <Route path='/product/:product_id' element={<ProductDetail/>}/>
         <Route path='/search/:term' element={<ProductSearch/>}/>
+        <Route path='/cart' element={<Cart/>}/>
 
         {/* Authentication*/}
 

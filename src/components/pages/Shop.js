@@ -84,7 +84,7 @@ function Shop({get_categories, categories, get_products, products, filter_produc
       <div>
         {/* Mobile filter dialog */}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
-          <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setMobileFiltersOpen}>
+          <Dialog as="div" className="fixed inset-0 flex z-40 md:hidden" onClose={setMobileFiltersOpen}>
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -121,9 +121,8 @@ function Shop({get_categories, categories, get_products, products, filter_produc
 
                 {/* Filters */}
                 <form onSubmit={e => handleSubmit(e)} className="mt-4 border-t border-gray-200">
+                 
                    <Disclosure as="div"  className="border-t border-gray-200 px-4 py-6">
-
-
                       {({ open }) => (
                         <>
                           <h3 className="-mx-2 -my-3 flow-root">
@@ -165,9 +164,9 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                           </h3>
                         </>
                       )}
-                    </Disclosure>
-                    
-                    <Disclosure as="div"  className="border-t border-gray-200 px-4 py-6">
+                   </Disclosure>
+                   
+                  <Disclosure as="div"  className="border-t border-gray-200 px-4 py-6 block">
                       {({ open }) => (
                         <>
                           <h3 className="-mx-2 -my-3 flow-root">
@@ -221,9 +220,10 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                         
                         </>
                       )}
-                    </Disclosure>
+                  </Disclosure>
+                                  
 
-                  <Disclosure as="div" className="border-b border-gray-200 py-6">
+                  <Disclosure as="div" className="border-b border-gray-200 py-6 block">
                     {({ open }) => (
                       <>
                         <h3 className="-my-3 flow-root">
@@ -305,18 +305,18 @@ function Shop({get_categories, categories, get_products, products, filter_produc
             </h2>
 
 
-            <div className="">
+            <div className="hidden md:flex">
               {/* Filters */}
               <form onSubmit={e => handleSubmit(e)} className="">
-                <div className='grid grid-cols-4 gap-10 items-center'>
-                
-                  <Disclosure as="div"  className="px-1 py-6">
+                <div className='flex flex-row gap-10 items-center'>
+                <div className='block'>
+                  <Disclosure as="div"  className="py-6">
 
 
                       {({ open }) => (
                         <>
                           <h3 className="-mx-2 -my-3 flow-root">
-                            <Disclosure.Button className="px-2 py-3 bg-white w-full flex items-center justify-between text-gray-400 hover:text-gray-500">
+                            <Disclosure.Button className="gap-6 py-3 bg-white w-full flex items-center justify-between text-gray-400 hover:text-gray-500">
                               <span className="font-medium text-gray-900 text-2xl">Categories</span>
                               <span className="flex items-center">
                                 {open ? (
@@ -355,10 +355,10 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                         </>
                       )}
                   </Disclosure>
-                
 
-                 
-                    
+                </div>
+                <div className=''>
+    
                   <Disclosure as="div" className="py-6"> 
                     {({ open }) => (
                       <>
@@ -415,7 +415,10 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                     )}
                   </Disclosure>
                 
-                    
+                </div>
+                  
+                <div className=''>
+                     
                   <Disclosure as="div" className="py-6">
                     {({ open }) => (
                       <>
@@ -467,13 +470,13 @@ function Shop({get_categories, categories, get_products, products, filter_produc
                       </>
                     )}
                   </Disclosure>
+                </div>          
+                
+                 
                  
 
                 
-
-
-                
-                <div>
+                <div className='block'>
                   <button type='submit' className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
   >                    Search
                   </button>
