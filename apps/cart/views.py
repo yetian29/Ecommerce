@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from .models import Cart, CartItem
 from rest_framework.response import Response
@@ -6,77 +6,98 @@ from rest_framework import status
 from rest_framework import permissions
 from apps.product.models import Product
 from apps.product.serializers import  ProductSerializer
+from django.db import transaction
+from django.db.models import Sum, F
+from django.db import models  # Import models
+
+
+
+
+
+
 
 # Create your views here.
 
+  
+class AddOrUpdateItemView(APIView):
+    permission_classes=(permissions.AllowAny,)
+    
+    def put(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
+        product_id = data.get('product_id')
+        count = data.get('count')
+
+        if not user.is_authenticated:
+            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        try:
+            product_id = int(product_id)
+            product = get_object_or_404(Product, id=product_id, quantity__gt=0)
+        except (ValueError, Product.DoesNotExist):
+            return Response({'Error': 'Product does not exist or is out of stock'}, status=status.HTTP_400_BAD_REQUEST)
+
+        cart, created = Cart.objects.get_or_create(user=user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+        if not created:
+            # Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+            cart_item.count += int(count)
+            cart_item.save()
+        else:
+            # Sản phẩm mới, tạo mới CartItem
+            cart_item.count = int(count)
+            cart_item.save()
+            cart.total_items += 1
+            cart.save()
+      
+        cart_items = cart.cart_items.select_related('product').all()
+        result = [{'id': item.id, 'count': item.count, 'product': ProductSerializer(item.product).data} for item in cart_items]
+
+        return Response({'item_add': result}, status=status.HTTP_200_OK)
 
 
+
+
+
+
+
+
+    
+
+
+
+
+
+
+       
 
 class GetItemsView(APIView):
     def get(self, request, format=None):
         user = self.request.user
+
         try:
-            Cart.objects.filter(user=user).exists()
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
             cart = Cart.objects.get(user=user)
-            result = []
-            cart_items = cart.cart_items.order_by('product').all()
-            for cart_item in cart_items:
-                item = {}
-                item['id'] = cart_item.id
-                item['count'] = cart_item.count
-                product = Product.objects.get(id=cart_item.product.id)
-                product = ProductSerializer(product)
-                item['product'] = product.data
-                result.append(item)
+        except Cart.DoesNotExist:
+            return Response({'error': 'Your account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            return Response({'cart_items': result}, status=status.HTTP_200_OK)
-  
+        cart_items = cart.cart_items.all().order_by('product')
+        result = []
+        for cart_item in cart_items:
+            item = {
+                'id': cart_item.id,
+                'count': cart_item.count,
+                'product': ProductSerializer(cart_item.product).data
+            }
+            result.append(item)
 
-class AddItemView(APIView):
-    permission_classes=(permissions.AllowAny,)
+        return Response({'cart': result}, status=status.HTTP_200_OK)
 
-    def post(self, request, format=None):
-        user = self.request.user
-        data = self.request.data
-        product_id = data['product_id']
-        count = data['count']
-        try:
-            Cart.objects.filter(user=user).exists()
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            cart = Cart.objects.get(user=user)
-            try:
-                product_id = int(product_id)
-            except:
-                return Response({'Error': 'Product ID invalid. Product ID must be an integer'})
-            else:
-                if Product.objects.filter(id=product_id).exists():
-                    product = Product.objects.get(id=product_id)
-                    if (product.quantity < 1):
-                        return Response({'Error': 'Product out of stock'})
-                    else:
-                        result = []
-                        cart_items = cart.cart_items.order_by('product').all()
-                        if cart_items.filter(product=product).exists():
-                            return Response({'Error': 'Product already in cart'}, status=status.HTTP_409_CONFLICT)
-                        else:
-                            CartItem.objects.create(cart=cart, product=product, count=count)
-                            total_items = int(cart.total_items) + 1
-                            total_items = Cart.objects.filter(user=user).update(total_items=total_items)
-                            
-                            for cart_item in cart_items:
-                                item = {}
-                                item['id'] = cart_item.id
-                                item['count'] = cart_item.count
-                                product = ProductSerializer(product) 
-                                item['product'] = product.data
-                                result.append(item)
-                            return Response({'item_add': result}, status=status.HTTP_200_OK)
-                return Response({'Error': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
 
 class RemoveItemView(APIView):
 
@@ -84,154 +105,99 @@ class RemoveItemView(APIView):
 
     def delete(self, request, format=None):
         user = self.request.user
-        data = self.request.data
-        product_id = data['product_id']
-        # count = data['count']
-        try:
-            Cart.objects.filter(user=user).exists()
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            cart = Cart.objects.get(user=user)
-            result = []
-            if cart.cart_items.all().exists:
-                cart_items = cart.cart_items.order_by('product').all()
-                try:
-                    product_id = int(product_id)
-                except:
-                    return Response({'Error': 'Product ID invalid. Product must be an integer'})
-                else:
-                    if Product.objects.filter(id=product_id).exists():
-                        product = Product.objects.get(id=product_id)
-                       
-                        if cart_items.filter(product=product).exists():
-                            cart_items.filter(product=product).delete()
-                            total_items = int(cart.total_items) - 1
-                            total_items = Cart.objects.filter(user=user).update(total_items=total_items)
-                            for cart_item in cart_items:
-                                item = {}
-                                item['id'] = cart_item.id
-                                item['count'] = cart_item.count
-                                product = Product.objects.get(id=cart_item.product.id)
-                                product = ProductSerializer(product)
-                                item['product'] = product.data
-                                result.append(item)
-                            return Response({'cart_items': result}, status=status.HTTP_200_OK)
+        product_id = self.request.data.get('product_id')
 
-                        return Response({'Error': 'Product is not in cart'}, status=status.HTTP_409_CONFLICT)
-                    return Response({'Error': 'Product does nost exist. Can not Remove'}, status=status.HTTP_409_CONFLICT)    
-                
-            return Response({'cart_items': result}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+        # Kiểm tra tồn tại của giỏ hàng, nếu không tồn tại sẽ ném lỗi 404
+        cart = get_object_or_404(Cart, user=user)
+
+        product = get_object_or_404(Product, id=product_id)
+
+        cart_item = cart.cart_items.filter(product=product).first()
+
+        result = []
+
+        if cart_item:
+            cart_item.delete()
+            cart.total_items -= 1
+            cart.save()
+
+            cart_items = cart.cart_items.all().order_by('product')
+
+            for cart_item in cart_items:
+                    item = {
+                        'id': cart_item.id,
+                        'count': cart_item.count,
+                        'product': ProductSerializer(cart_item.product).data
+                    }
+                    result.append(item)
+
+
+            return Response({'cart': result}, status=status.HTTP_200_OK)
+        else:
+            return Response({'Error': 'Product is not in cart.'}, status=status.HTTP_409_CONFLICT)
+
+
+
+
+
+
 class EmptyCartView(APIView):
-    permission_classes=(permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def delete(self, request, format=None):
         user = self.request.user
 
-        try:
-            Cart.objects.filter(user=user).exists()
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Kiểm tra tồn tại của giỏ hàng, nếu không tồn tại sẽ ném lỗi 404
+        cart = get_object_or_404(Cart, user=user)
+
+        cart_items = cart.cart_items.all()
+        if cart_items.exists():
+            cart_items.delete()
+            cart.total_items = 0
+            cart.save()
+            return Response({'success': 'Cart emptied successfully'}, status=status.HTTP_200_OK)
         else:
-            cart = Cart.objects.get(user=user)
-            if not cart.cart_items.all().exists():
-                return Response({'success': 'Cart is already empty'}, status=status.HTTP_200_OK)
-            else:
-                cart.cart_items.all().delete()
-                Cart.objects.filter(user=user).update(total_items=0 )
-                return Response({'success': 'Cart emptied successfully'}, status=status.HTTP_200_OK)
-            
+            return Response({'success': 'Cart is already empty'}, status=status.HTTP_200_OK)
+
+
+
 class GetTotalPricesView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request, format=None):
         user = self.request.user
-        try:
-            Cart.objects.filter(user=user).exists()
+        cart = get_object_or_404(Cart, user=user)
 
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            cart = Cart.objects.get(user=user)
-            total_cost = 0.0
-            total_compare_post = 0.0
-            if cart.cart_items.all().exists():
-                cart_items = cart.cart_items.order_by('product').all()
-                for cart_item in cart_items:
-                    total_cost += (float(cart_item.count) * float(cart_item.product.price))
-                    total_compare_post += (float(cart_item.count) * float(cart_item.product.compare_price))
-                total_cost = round(total_cost, 2)
-                total_compare_post = round(total_compare_post, 2)
-            return Response({'total_cost': total_cost, 'total_compare_cost': total_compare_post}, status=status.HTTP_200_OK)
-            
+        cart_items = cart.cart_items.select_related('product').all()
+
+        total_cost = 0.0
+        total_compare_cost = 0.0
+
+        for cart_item in cart_items:
+            count = float(cart_item.count)
+            product = cart_item.product
+
+            total_cost += count * float(product.price)
+            total_compare_cost += count * float(product.compare_price)
+
+        total_cost = round(total_cost, 2)
+        total_compare_cost = round(total_compare_cost, 2)
+
+        return Response({'total_cost': total_cost, 'total_compare_cost': total_compare_cost}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
 class GetTotalItemsView(APIView):
-    def get(self, request, formate=None):
-        user = self.request.user
-        try:
-            Cart.objects.filter(user=user).exists()
+    permission_classes = (permissions.AllowAny,)
 
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            cart = Cart.objects.get(user=user)
-        
-            total_items = cart.total_items
-            return Response({'total_items': total_items}, status=status.HTTP_200_OK)
-        
-    
-class UpdateItemView(APIView):
-    permission_classes=(permissions.AllowAny,)
-    def put(self, request, formate=None):
-        user = self.request.user
-        data = self.request.data
-        product_id = data['product_id']
-        count = data['count']
-        try:
-            Cart.objects.filter(user=user).exists()
-
-        except:
-            return Response({'Error': 'Your Account is not logged in'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            cart = Cart.objects.get(user=user)
-            if cart.cart_items.all().exists:
-                cart_items = cart.cart_items.order_by('product').all()
-                
-                try:
-                    product_id = int(product_id)
-                except:
-                    return Response({'Error': 'Product ID invalid. Product ID must be an integer'})
-
-                else:
-                    if Product.objects.filter(id=product_id).exists():
-                        product = Product.objects.get(id=product_id)
-                        quantity = product.quantity
-                        if count <= quantity and quantity > 0:
-
-                            cart_items.filter(product=product).update(count=count)
-                            result = []
-
-                            for cart_item in cart_items:
-                                item = {}
-                                item['id'] = cart_item.id
-                                item['count'] = cart_item.count
-                                product = Product.objects.get(id=cart_item.product.id)
-                                product = ProductSerializer(product)
-                                item['product'] = product.data
-                                result.append(item)
-                            return Response({'cart_items': result}, status=status.HTTP_200_OK)
-                                    
-                        return Response({'Error': 'The product is out of stock or the quantity added is too large'}, status=status.HTTP_409_CONFLICT)
-
-                    return Response({'Error': 'Product is not in cart'}, status=status.HTTP_409_CONFLICT)
-
-        
-
-                
-                    
+    def get(self, request, format=None):
+        cart = get_object_or_404(Cart, user=self.request.user)
+        total_items = cart.total_items
+        return Response({'total_items': total_items}, status=status.HTTP_200_OK)
 
 
 
-
-
-
-
-   

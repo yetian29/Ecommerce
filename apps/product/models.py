@@ -22,6 +22,9 @@ class Product(models.Model):
     description = models.TextField()
     date_created = models.DateTimeField(default=datetime.now)
 
+    def is_in_stock(self, requested_quantity):
+
+        return int(self.quantity) >= int(requested_quantity)
 
     def __str__(self):
         return self.name

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render 
 from rest_framework.views import APIView
 from .models import Product
 from .serializers import ProductSerializer

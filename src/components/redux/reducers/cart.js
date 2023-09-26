@@ -11,8 +11,7 @@ import {
     GET_TOTAL_PRICE_FAIL,
     GET_TOTAL_ITEMS_SUCCESS,
     GET_TOTAL_ITEMS_FAIL,
-    UPDATE_ITEM_SUCCESS,
-    UPDATE_ITEM_FAIL
+   
 
 
 
@@ -20,8 +19,9 @@ import {
 
 
 const initialState = {
-    'item_add': null,
-    'cart_items': null,
+    items: null,
+    total_cost: null,
+    total_items: null
 }
 
 export default function Cart(state=initialState, action){
@@ -30,36 +30,40 @@ export default function Cart(state=initialState, action){
         case ADD_ITEM_SUCCESS:
             return{
                 ...state,
-                item_add: payload
+                items: payload.cart
             }
         case ADD_ITEM_FAIL:
 
         case GET_ITEMS_SUCCESS:
             return{
                 ...state,
-                cart_items: payload
+                items: payload.cart
                 
             }
         case GET_ITEMS_FAIL:
 
         case REMOVE_ITEM_SUCCESS:
-            return{
-                ...state,
-                cart_items: null
-            }
+           
         case REMOVE_ITEM_FAIL:
 
         case EMPTY_CART_SUCCESS:
         case EMPTY_CART_FAIL:
 
         case GET_TOTAL_PRICE_SUCCESS:
+            return{
+                ...state,
+                total_cost: payload.total_cost
+            }
         case GET_TOTAL_PRICE_FAIL:
 
         case GET_TOTAL_ITEMS_SUCCESS:
+            return{
+                ...state,
+                total_items: payload.total_items
+            }
         case GET_TOTAL_ITEMS_FAIL:
 
-        case UPDATE_ITEM_SUCCESS:
-        case UPDATE_ITEM_FAIL:
+       
 
         default: 
             return state

@@ -49,7 +49,8 @@ PROJECT_APPS = [
 ECOMMERCE_APPS = [
     'apps.category',
     'apps.product',
-    'apps.cart'
+    'apps.cart',
+    'apps.shipping'
 
 ]
 
@@ -85,8 +86,10 @@ CKEDITOR_CONFIGS = {
 }
 
 MIDDLEWARE = [
-     "corsheaders.middleware.CorsMiddleware",
+     
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -191,8 +194,8 @@ PASSWORD_HASHERS = [
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1440),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=3),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10080),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     'AUTH_TOKEN_CLASSES':  ("rest_framework_simplejwt.tokens.AccessToken",),
@@ -232,6 +235,17 @@ AUTHENTICATION_BACKENDS = (
 
 if not DEBUG:
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')
+
+
+    CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEPLOY')
+
+        
+
+    CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEPLOY')
+
+
+  
+
     DATABASES = {
         'default': env.db('DATABASE_URL', default='postgres://Ecommerce1')}
     DATABASES['default']['ATOMIC_REQUESTS'] = True
@@ -264,6 +278,8 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEV')
      
 
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEV')
+
+
   
 
 

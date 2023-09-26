@@ -218,7 +218,7 @@ function Navbar({isAuthenticated, logout}) {
      <Popover className="relative bg-white">
       <div className="absolute inset-0 shadow z-30 pointer-events-none" aria-hidden="true" />
       <div className="relative z-20">
-        <div className="sticky top-0 max-w-7xl mx-auto flex justify-between items-center px-3 py-5 sm:px-6 sm:py-4 lg:px-8 md:justify-start md:space-x-10">
+        <div className="bg-gray-200 gap-10  fixed top-0 left-0 right-0 max-w-[1520px] mx-auto flex justify-between items-center px-8 py-5 sm:px-6 sm:py-4 lg:px-10 md:justify-start md:space-x-10">
           <div>
             <a href="/" className="flex mr-[40px]">
               <span className="sr-only">Workflow</span>
@@ -231,10 +231,10 @@ function Navbar({isAuthenticated, logout}) {
           </div>
           <div className="flex items-center -mr-2 -my-2 md:hidden">
              <Link to='/cart'>
-                <ShoppingCartIcon className='mr-5 h-7 w-7 text-gray-400'/>
+                <ShoppingCartIcon className='mr-5 h-7 w-7 text-gray-500'/>
 
               </Link>
-            <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-600 hover:text-gray-800 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
               <span className="sr-only">Open menu</span>
               <MenuIcon className="h-6 w-6" aria-hidden="true" />
             </Popover.Button>
@@ -317,7 +317,7 @@ function Navbar({isAuthenticated, logout}) {
                 )}
               </Popover>
               <Link to="/shop" className="text-base font-medium text-gray-500 hover:text-gray-900">
-                    Shop
+                  Shop
               </Link>
               
 
@@ -426,7 +426,7 @@ function Navbar({isAuthenticated, logout}) {
                 )}
               </Popover>
                <div className="w-full flex-1 md:px-4  xl:col-span-6">
-                  <div className="flex items-center px-6 py-4 md:w-[350px] md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
+                  <div className="flex items-center px-6 py-4 md:w-[450px] md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                     <form onSubmit={e => handleSubmit(e)} className="w-full">
                       <label htmlFor="search" className="sr-only">
                         Search
@@ -452,7 +452,7 @@ function Navbar({isAuthenticated, logout}) {
             </Popover.Group>
             <div className="flex items-center">
               <Link to='/cart' className='mr-5'>
-                <ShoppingCartIcon className='mr-5 h-8 w-8 text-gray-400'/>
+                <ShoppingCartIcon className='mr-5 h-8 w-8 text-gray-500'/>
 
               </Link>
              
@@ -476,7 +476,7 @@ function Navbar({isAuthenticated, logout}) {
       >
         <Popover.Panel
           focus
-          className="absolute z-30 top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
+          className="relative z-30 top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
         >
           <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50">
             <div className="pt-5 pb-6 px-5 sm:pb-8">

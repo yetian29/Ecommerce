@@ -15,56 +15,10 @@ import {
      UPDATE_ITEM_FAIL, 
      UPDATE_ITEM_SUCCESS} from "./type"
 import setAlert from "./alert"
+import { Navigate } from "react-router-dom"
 
 
 
-export const add_item = (product_id, count) => async dispatch =>{
-    if(localStorage.getItem('access')){
-        const config = {
-        headers: {
-            'Authorization': `JWT ${localStorage.getItem('access')}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-    }
-    const body = JSON.stringify({
-        product_id,
-        count
-    })
-    try{
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/add_item`, body, config)
-        if(res.status === 200){
-            dispatch({
-                type: ADD_ITEM_SUCCESS,
-                payload: res.data
-            })
-            dispatch(setAlert('Them vao gio hang thanh cong', 'green'))
-        }
-        else{
-            dispatch({
-                type: ADD_ITEM_FAIL
-            })
-            dispatch(setAlert('Them vao gio hang that bai', 'red'))
-        }
-    }
-    catch(error){
-        dispatch({
-            type: ADD_ITEM_FAIL
-        })
-        dispatch(setAlert('Them vao gio hang that bai', 'red'))
-
-
-    }
-    }
-    else{
-        dispatch({
-            type: ADD_ITEM_FAIL
-        })
-        dispatch(setAlert('Them vao gio hang that bai', 'red'))
-
-    }
-   
-}
 
 
 export const get_items = () => async dispatch =>{
@@ -103,6 +57,56 @@ export const get_items = () => async dispatch =>{
     }
    
 }
+
+export const add_item = (product_id, count) => async dispatch =>{
+    if(localStorage.getItem('access')){
+        const config = {
+        headers: {
+            'Authorization': `JWT ${localStorage.getItem('access')}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+    }
+        const body = JSON.stringify({
+            product_id,
+            count
+        })
+    
+    try{
+        const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/cart/add_item`, body, config)
+        if(res.status === 200){
+            dispatch({
+                type: ADD_ITEM_SUCCESS,
+                payload: res.data
+            })
+            dispatch(
+
+                setAlert('Them san pham o gio hang thanh cong', 'green')
+            )
+        }
+        else{
+            dispatch({
+                type: ADD_ITEM_FAIL
+            })
+
+            dispatch(setAlert('Them san pham o gio hang that bai', 'red'))
+        }
+    }
+    catch(error){
+        dispatch({
+            type: ADD_ITEM_FAIL
+        })
+      dispatch(setAlert('Them san pham o gio hang that bai', 'red'))
+
+    }
+    }
+    else{
+      return <Navigate to='/login'/>
+
+    }
+   
+}
+
 
 
 export const remove_item = (product_id) => async dispatch =>{
@@ -260,48 +264,6 @@ export const get_total_items = () => async dispatch =>{
    
 }
 
-
-export const update_item = (product_id, count) => async dispatch =>{
-    if(localStorage.getItem('access')){
-        const config = {
-        headers: {
-            'Authorization': `JWT ${localStorage.getItem('access')}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-    }
-        const body = JSON.stringify({
-            product_id, 
-            count
-        })
-    
-    try{
-        const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/cart/update_item`, config)
-        if(res.status === 200){
-            dispatch({
-                type: UPDATE_ITEM_SUCCESS,
-                payload: res.data
-            })
-        }
-        else{
-            dispatch({
-                type: UPDATE_ITEM_FAIL
-            })
-        }
-    }
-    catch(error){
-        dispatch({
-            type: UPDATE_ITEM_FAIL
-        })
-    }
-    }
-    else{
-        dispatch({
-            type: UPDATE_ITEM_FAIL  
-        })
-    }
-   
-}
 
 
 

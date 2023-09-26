@@ -22,6 +22,7 @@ import {
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_CONFIRM_FAIL,
     RESET_PASSWORD_CONFIRM_SUCCESS,
+    REFRESH_TOKEN,
     
     
    
@@ -162,7 +163,8 @@ export const login = (email, password) => async dispatch => {
     })
     const config = {
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+
         }
     };
 
@@ -171,6 +173,7 @@ export const login = (email, password) => async dispatch => {
         password, 
        
     });
+
 
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config);
@@ -181,6 +184,8 @@ export const login = (email, password) => async dispatch => {
                 type: LOGIN_SUCCESS,
                 payload: res.data
             });
+            
+            
 
             dispatch(load_user());
 
@@ -214,11 +219,20 @@ export const login = (email, password) => async dispatch => {
         dispatch(setAlert('Dang nhap tai khoan that bai', 'red')); 
 
     }
+
 }
 
 export const load_user = () => async dispatch => {
+    const accessToken = localStorage.getItem('access')
+
+    if (!accessToken){
+        dispatch({
+            type: LOGOUT
+        })
+        return
+    }
     
-    if (localStorage.getItem('access')){
+    
      const config = {
         headers: {
             'Authorization': `JWT ${localStorage.getItem('access')}`,
@@ -259,18 +273,21 @@ export const load_user = () => async dispatch => {
 
     }
     }
-    else {
-        dispatch({
-            type: LOAD_USER_FAIL
-        })
-    }
+   
   
-}
+
 
 export const check_account = () => async dispatch => {
-    
-    if(localStorage.getItem('access')) {
-   
+
+    const accessToken = localStorage.getItem('access')
+
+    if(!accessToken){
+        dispatch({
+            type: LOGOUT
+        })
+        return
+    }
+     
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -279,7 +296,7 @@ export const check_account = () => async dispatch => {
     };
 
     const body = JSON.stringify({
-        token: localStorage.getItem('access') 
+        token: accessToken
        
     });
 
@@ -311,26 +328,31 @@ export const check_account = () => async dispatch => {
 
     }
     }
-    else {
-        dispatch({
-            type: VERIFY_FAIL
-        })
-    }
-
    
-}
+
 
 export const refresh = () => async dispatch => {
-    if (localStorage.getItem('refresh')) {
+    
+    const refreshToken = localStorage.getItem('refresh');
+
+    if (!refreshToken) {
+        dispatch({ type: LOGOUT });
+        return;
+    }
+
+    dispatch({
+        type: REFRESH_TOKEN
+    })
+   
         const config = {
-            headers: {
-                
-                'Content-Type': 'application/json'
-            }
-        };
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+    },
+  };
 
         const body = JSON.stringify({
-            refresh: localStorage.getItem('refresh')
+            refresh: refreshToken
         });
 
         try {
@@ -341,22 +363,20 @@ export const refresh = () => async dispatch => {
                     type: REFRESH_SUCCESS,
                     payload: res.data
                 });
-            } else {
+            } 
+            else {
                 dispatch({
-                    type: REFRESH_FAIL
-                });
+                type: REFRESH_FAIL
+            });
             }
-        }catch(err){
+        }
+        catch(error){
             dispatch({
                 type: REFRESH_FAIL
             });
         }
-    } else {
-        dispatch({
-            type: REFRESH_FAIL
-        });
-    }
-}
+    } 
+   
 
 export const logout = () => dispatch => {
     dispatch({
@@ -370,7 +390,6 @@ export const reset_password = (email) => async dispatch => {
     
         const config = {
             headers: {
-     
                 'Content-Type': 'application/json'
             }
         };
@@ -409,8 +428,7 @@ export const reset_password = (email) => async dispatch => {
 export const reset_password_confirm = (uid, token, new_password, re_new_password) => async dispatch => {
     
         const config = {
-            headers: {
-                
+            headers: {      
                 'Content-Type': 'application/json'
             }
         };

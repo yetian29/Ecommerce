@@ -25,6 +25,7 @@ function App() {
         <Route path='/product/:product_id' element={<ProductDetail/>}/>
         <Route path='/search/:term' element={<ProductSearch/>}/>
         <Route path='/cart' element={<Cart/>}/>
+        <Route path='cart/product/:product_id' element={<ProductDetail/>}/>
 
         {/* Authentication*/}
 

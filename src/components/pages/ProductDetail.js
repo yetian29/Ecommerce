@@ -9,8 +9,7 @@ import { useParams } from "react-router-dom"
 import { connect } from "react-redux"
 import ProductColor from "../product/ProductColor"
 import { get_product} from '../redux/actions/product'
-import { add_item } from '../redux/actions/cart'
-
+import {add_item,  get_items } from '../redux/actions/cart'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -20,13 +19,22 @@ function classNames(...classes) {
 
 
 
-const ProductDetail = ({get_product, product, add_item, item_add}) =>{
+const ProductDetail = ({get_product, product, add_item}) =>{
 
     const params = useParams()
 
     const product_id = params.product_id
 
+
     const [count, setCount] = useState(1)
+
+    useEffect(() => {
+        get_product(product_id)
+       
+       
+    },[])
+
+   
 
     const addCount = () => {  
       setCount(count + 1)
@@ -36,25 +44,27 @@ const ProductDetail = ({get_product, product, add_item, item_add}) =>{
       setCount(count - 1)
     }
 
-    const handleSubmit = (e) => {
+    
+
+    const handleAddItem = (e) => {
       e.preventDefault();
       add_item(product_id, count)
       window.scrollTo(0, 0)
     }
+   
 
 
-    useEffect(() => {
-        get_product(product_id)
-       
-    },[])
 
     
     
     return(
         <Layout>
+          
             {product?
             <div className="bg-white">
-      <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+
+      <div className="mt-[100px] max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
           {/* Image gallery */}
           <Tab.Group as="div" className="flex flex-col-reverse">
@@ -131,7 +141,7 @@ const ProductDetail = ({get_product, product, add_item, item_add}) =>{
               <div className="mt-10 flex sm:flex-col1">
                 
                 <button
-                  onClick={e => handleSubmit(e)}
+                  onClick={e =>handleAddItem(e)}
                   className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
                 >
                   Add to shopping cart
@@ -166,12 +176,17 @@ const ProductDetail = ({get_product, product, add_item, item_add}) =>{
     )
 }
 
+
 const mapStateToProps = state => ({
    product: state.Product.product,
-   item_add: state.Cart.item_add
+   
 
 })
+
+
 export default connect(mapStateToProps,{
    get_product,
+   get_items,
    add_item
+  
 })(ProductDetail)
